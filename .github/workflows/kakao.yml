@@ -1,0 +1,27 @@
+name: kakao
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '19 0 * * *'
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - uses: nanasess/setup-chromedriver@master
+      - name: Set up Python
+        uses: actions/setup-python@v2
+      - run: pip install -r requirements.txt
+      - run: python kakao.py
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.date.outputs.date }}_K
+          path: res/**/*
+
